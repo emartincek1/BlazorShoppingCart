@@ -16,9 +16,16 @@ namespace ShopOnline.Web.Pages
         
         public string ErrorMessage { get; set; }
 
-        protected override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
-            return base.OnInitializedAsync();
+            try
+            {
+               Product = await ProductService.GetItem(Id);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+            }
         }
     }
 }
