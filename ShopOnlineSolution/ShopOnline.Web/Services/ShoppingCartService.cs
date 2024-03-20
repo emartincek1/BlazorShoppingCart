@@ -42,7 +42,7 @@ namespace ShopOnline.Web.Services
 
         public async Task<IEnumerable<CartItemDto>> GetItems(int userId)
         {
-            var response = await httpClient.GetAsync($"api/{userId}/GetItems");
+            var response = await httpClient.GetAsync($"api/ShoppingCart/{userId}/GetItems");
 
             if(response.IsSuccessStatusCode)
             {
