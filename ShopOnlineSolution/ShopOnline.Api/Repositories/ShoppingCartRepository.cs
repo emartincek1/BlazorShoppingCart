@@ -49,14 +49,34 @@ namespace ShopOnline.Api.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<CartItem> GetItem(int id)
+        public async Task<CartItem> GetItem(int id)
         {
-            throw new NotImplementedException();
+            return await (from cart in shopOnlineDbContext.Carts
+                          join cartItem in shopOnlineDbContext.CartItems
+                          on cart.Id equals cartItem.CartId
+                          where cartItem.Id == id
+                          select new CartItem 
+                          { 
+                                Id = cartItem.Id,
+                                ProductId = cartItem.ProductId,
+                                Qty = cartItem.Qty,
+                                CartId = cartItem.CartId
+                          }).SingleOrDefaultAsync();
         }
 
-        public Task<IEnumerable<CartItem>> GetItems(int userId)
+        public async Task<IEnumerable<CartItem>> GetItems(int userId)
         {
-            throw new NotImplementedException();
+            return await (from cart in shopOnlineDbContext.Carts
+                          join cartItem in shopOnlineDbContext.CartItems
+                          on cart.Id equals cartItem.CartId
+                          where cart.UserId == userId
+                          select new CartItem
+                          {
+                              Id = cartItem.CartId,
+                              ProductId = cartItem.ProductId,
+                              CartId = cartItem.CartId,
+                              Qty = cartItem.Qty,
+                          }).ToListAsync();
         }
 
         public Task<CartItem> UpdateQty(int id, CartItemQtyUpdateDto cartItemQtyUpdateDto)
