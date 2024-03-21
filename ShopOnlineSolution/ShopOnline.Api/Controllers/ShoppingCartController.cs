@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ShopOnline.Api.Entities;
 using ShopOnline.Api.Extentions;
 using ShopOnline.Api.Repositories.Contracts;
 using ShopOnline.Models.Dtos;
@@ -111,8 +112,66 @@ namespace ShopOnline.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
 
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<CartItemDto>> DeleteItem(int id)
+        {
+            try
+            {
+                var cartItem = await shoppingCartRepository.DeleteItem(id);
+
+                if (cartItem == null)
+                {
+                    return NotFound();
+                }
+
+                var product = await productRepository.GetItem(cartItem.ProductId);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                var cartItemDto = cartItem.ConvertToDto(product);
+
+                return Ok(cartItemDto);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult<CartItemDto>> UpdateQty(int id, CartItemQtyUpdateDto cartItemQtyUpdateDto)
+        {
+            try
+            {
+                var cartItem = await shoppingCartRepository.UpdateQty(id, cartItemQtyUpdateDto);
+
+                if (cartItem == null)
+                {
+                    return NotFound();
+                }
+
+                var product = await productRepository.GetItem(cartItem.ProductId);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                var cartItemDto = cartItem.ConvertToDto(product);
+
+                return Ok(cartItemDto);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
     }
 }
